@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+     #chat-form {
+         bottom: 0;
+         position: absolute;
+         width: 90%;
+     }
+
+     #send-button {
+         border: 1px solid black;
+         padding: 2px 5px;
+     }
+
+     #message-input {
+         width: 80%;
+     }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form id="chat-form">
+      <input id="message-input">
+      <input type="submit" id="send-button" value="Send">
+    </form>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+   $ = document.querySelector.bind(document);
+   socket = io();
+
+   $('#chat-form').addEventListener('submit', (e) => {
+       message = $('#message-input').value;
+       console.log(message);
+       socket.emit('chat.message', message);
+       $('#message-input').value = '';
+       e.preventDefault();
+   });
+
+   socket.on('chat.message', (message) => {
+       $('#messages').innerHTML += `<li>${message}</li>`;
+   })
+
+  </script>
+</html>
