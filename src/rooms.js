@@ -28,6 +28,17 @@ class GameRoom extends Room {
         super(io, players);
 
         this.game = new Game();
+
+        if(this.players.length < Game.playersCount){
+            const reason = (
+                'Insufficient number of players for the current game. ' +
+                    'Disbanding room.'
+            );
+            this.disband(reason);
+
+            return;
+        }
+
         this.players[this.game.currentPlayer].socket.emit('yourTurn');
     }
 
