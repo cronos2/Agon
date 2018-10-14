@@ -1,16 +1,17 @@
-const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+require('dotenv').config();
+
+const http = require('http');
+const socketio = require('socket.io');
+
+const app = http.createServer(function(){});
+const io = socketio(app);
+
 
 const GameRoom = require('./src/rooms.js').GameRoom;
 const Player = require('./src/player.js');
 const Server = require('./src/server.js')(io);
 const server = new Server();
 
-
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/client.html');
-});
 
 io.on('connection', (socket) => {
     socket.player = new Player(socket);
@@ -38,4 +39,4 @@ io.on('connection', (socket) => {
     );
 });
 
-http.listen(3000);
+app.listen(process.env.PORT);
