@@ -6,6 +6,7 @@ module.exports = function(io){
     class Server {
         constructor(){
             this.gameNames = {
+                'Nim': require('./games/nim.js'),
                 'TicTacToe': require('./games/tictactoe.js')
             };
 
