@@ -69,6 +69,7 @@ class GameRoom extends Room {
             }
         } else {
             player.socket.emit('wrongMove');
+            return GameRoom.signals.WRONG_MOVE;
         }
 
         return GameRoom.signals.OK;
@@ -77,7 +78,8 @@ class GameRoom extends Room {
 
 GameRoom.signals = {
     'EOG': -1,
-    'OK': 0
+    'OK': 0,
+    'WRONG_MOVE': 1
 };
 
 
