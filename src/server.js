@@ -40,14 +40,14 @@ module.exports = function(io){
         }
 
         disbandRoom(room){
-            console.log('room %s disbanded', room);
+            console.log('room disbanded', room);
 
             room.disband();
             _.pull(this.gameRooms, room);
         }
 
         handleDisconnectedPlayer(player){
-            console.log('player %s disconnected', player);
+            console.log('player disconnected', player);
 
             this.gameRooms.filter(
                 room => room.players.includes(player)

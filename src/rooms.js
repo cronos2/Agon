@@ -16,8 +16,8 @@ class Room {
         player.gameRoom = this;
     }
 
-    disband(){
-        this.io.to(this._id).emit('disbanded');
+    disband(reason){
+        this.io.to(this._id).emit('disbanded', reason);
         this.players.forEach(player => player.socket.leave(this._id));
     }
 }

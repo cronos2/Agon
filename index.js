@@ -28,7 +28,7 @@ io.on('connection', (socket) => {
             const exit_code = socket.player.gameRoom.move(socket.player, move);
 
             if(exit_code == GameRoom.signals.EOG){
-                server.disbandRoom(socket.player.gameRoom);  // TODO
+                server.disbandRoom(socket.player.gameRoom);
             }
         }
     );
