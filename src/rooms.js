@@ -50,8 +50,8 @@ class GameRoom extends Room {
 
         if(this.game.validateMove(playerIndex, move)){
             this.game.makeMove(playerIndex, move);
-            player.socket.to(this._id).emit('move', {
-                'move': move//, 'player': player
+            this.io.to(this._id).emit('move', {
+                'move': move, 'player': playerIndex
             });
 
             if(this.game.isFinished()){
