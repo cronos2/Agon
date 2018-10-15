@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/cronos2/game-server.svg?branch=master)](https://travis-ci.org/cronos2/game-server)
+[![Build Status](https://travis-ci.org/cronos2/Agon.svg?branch=master)](https://travis-ci.org/cronos2/Agon)
 
 ## A minimal, PoC game server for the Virtual Infrastructure subject's project using microservices.
 
