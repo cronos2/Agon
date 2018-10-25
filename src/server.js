@@ -28,6 +28,9 @@ class Server {
     }
 
     handleConnection(socket){
+        console.log('new player', socket.player.serialize());
+        this.lobby.addPlayer(socket.player);
+
         socket.on('findMatch', gameName => {
             console.log('find match');
             this.handleMatchRequest(socket.player, gameName);
@@ -71,9 +74,7 @@ class Server {
     }
 
     handleMatchRequest(player, gameName){
-        console.log('new player', player.serialize());
         player.gameName = gameName;
-        this.lobby.players.push(player);
         console.log('lobby', this.lobby.players.map(p => p.serialize()));
 
         this.attemptMatch(gameName);
