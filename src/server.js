@@ -1,71 +1,123 @@
 const _ = require('lodash');
-const rooms = require('./rooms.js');
+const { GameRoom, Room } = require('./rooms.js');
+const Player = require('./player.js');
 
 
-module.exports = function(io){
-    class Server {
-        constructor(){
-            this.gameNames = {
-                'Nim': require('./games/nim.js'),
-                'TicTacToe': require('./games/tictactoe.js')
-            };
+class Server {
+    constructor(io){
+        this.io = io;
+        this.lobby = new Room(io);
+        this.gameRooms = [];
+        this.gameNames = {
+            'Nim': require('./games/nim.js'),
+            'TicTacToe': require('./games/tictactoe.js')
+        };
 
-            this.lobby = new rooms.Room(io);
-            this.gameRooms = [];
-        }
+        this.handleConnection = this.handleConnection.bind(this);
+        this.setUpIO();
+    }
 
-        getPlayersWaitingForGame(gameName){
-            return this.lobby.players.filter(
-                player => player.gameName == gameName
-            );
-        }
+    setUpIO(){
+        this.io.use((socket, next) => {
+            console.log('username', socket.handshake.query.username);
+            socket.player = new Player(socket, socket.handshake.query.username);
+            next();
+        });
 
-        handleNewPlayer(player, gameName){
-            player.gameName = gameName;
-            this.lobby.players.push(player);
-            var waitingPlayers = this.getPlayersWaitingForGame(gameName);
+        this.io.on('connection', this.handleConnection);
+    }
 
-            if(waitingPlayers.length >= this.gameNames[gameName].playersCount){
-                var selectedPlayers = waitingPlayers.slice(
-                    0, this.gameNames[gameName].playersCount
-                );
+    handleConnection(socket){
+        socket.on('findMatch', gameName => {
+            console.log('find match');
+            this.handleMatchRequest(socket.player, gameName);
+        });
 
-                this.createRoom(
-                    gameName,
-                    selectedPlayers
-                );
+        socket.on('move', move => {
+            console.log('move', move);
+            const exit_code = socket.player.gameRoom.move(socket.player, move);
 
-                _.pull(this.lobby.players, ...selectedPlayers);
+            if(exit_code == GameRoom.signals.EOG){
+                this.disbandRoom(socket.player.gameRoom);
             }
-        }
+        });
 
-        disbandRoom(room){
-            console.log('room disbanded', room);
+        socket.on('disconnect', () => {
+            this.handleDisconnection(socket.player);
+        });
+    }
 
-            room.disband();
-            _.pull(this.gameRooms, room);
-        }
+    handleDisconnection(player){
+        console.log('player disconnected', player.serialize());
 
-        handleDisconnectedPlayer(player){
-            console.log('player disconnected', player);
+        this.gameRooms.filter(
+            room => room.players.includes(player)
+        ).forEach(
+            room => this.disbandRoom(room)
+        );
+    }
 
-            this.gameRooms.filter(
-                room => room.players.includes(player)
-            ).forEach(
-                room => this.disbandRoom(room)
+    disbandRoom(room){
+        console.log('room disbanded', room);
+
+        room.disband();
+        _.pull(this.gameRooms, room);
+    }
+
+    getPlayersWaitingForGame(gameName){
+        return this.lobby.players.filter(
+            player => player.gameName == gameName
+        );
+    }
+
+    handleMatchRequest(player, gameName){
+        console.log('new player', player.serialize());
+        player.gameName = gameName;
+        this.lobby.players.push(player);
+        console.log('lobby', this.lobby.players.map(p => p.serialize()));
+
+        this.attemptMatch(gameName);
+    }
+
+    attemptMatch(gameName){
+        var waitingPlayers = this.getPlayersWaitingForGame(gameName);
+
+        if(waitingPlayers.length >= this.gameNames[gameName].playersCount){
+            var selectedPlayers = waitingPlayers.slice(
+                0, this.gameNames[gameName].playersCount
             );
-        }
 
-        createRoom(gameName, players){
-            const newRoom = new rooms.GameRoom(
-                this.gameNames[gameName],
-                io,
-                players
+            this.createRoom(
+                gameName,
+                selectedPlayers
             );
-            this.gameRooms.push(newRoom);
-            console.log('match found. creating new room');
+
+            _.pull(this.lobby.players, ...selectedPlayers);
         }
     }
 
-    return Server;
-};
+    createRoom(gameName, players){
+        console.log('match found. creating new room');
+
+        const newRoom = new GameRoom(
+            this.gameNames[gameName],
+            this.io,
+            players
+        );
+        this.gameRooms.push(newRoom);
+
+        players.forEach((player, i) => {
+            player.socket.emit(
+                'matchFound',
+                players.map(p => p.serialize()),  // players
+                i,                                // own
+                newRoom.game.currentPlayer        // current
+            );
+        });
+
+        console.log(players.map(p => p.serialize()));
+    }
+}
+
+
+module.exports = Server;
