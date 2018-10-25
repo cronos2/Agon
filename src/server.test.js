@@ -14,8 +14,10 @@ beforeEach(() => {
     player = new Player({
         'emit': jest.fn(),
         'join': jest.fn(),
-        'leave': jest.fn()
+        'leave': jest.fn(),
+        'on': jest.fn(),
     });
+    player.socket.player = player;
 });
 
 describe('Initialization', () => {
@@ -35,17 +37,19 @@ describe('Initialization', () => {
 
 describe('Room creation', () => {
     test('lobby holds waiting players', () => {
-        server.handleMatchRequest(player, gameName);
+        server.handleConnection(player.socket);
 
         expect(server.lobby.players).toHaveLength(1);
         expect(server.gameRooms).toHaveLength(0);
     });
 
     test('new game room is created when there are enough players', () => {
+        server.lobby.players.push(player);
         server.handleMatchRequest(player, gameName);
 
         expect(server.gameRooms).toHaveLength(0);
 
+        server.lobby.players.push(player);
         server.handleMatchRequest(player, gameName);
 
         expect(server.gameRooms).toHaveLength(1);
@@ -55,6 +59,7 @@ describe('Room creation', () => {
     });
 
     test('players in new room are removed from the lobby', () => {
+        server.lobby.players = [player, player];
         server.handleMatchRequest(player, gameName);
         server.handleMatchRequest(player, gameName);
 
@@ -65,6 +70,7 @@ describe('Room creation', () => {
 
 describe('Room destruction', () => {
     test('room is disbanded when someone disconnects', () => {
+        server.lobby.players = [player, player];
         server.handleMatchRequest(player, gameName);
         server.handleMatchRequest(player, gameName);
 
@@ -74,10 +80,13 @@ describe('Room destruction', () => {
         const room = server.gameRooms[0];
         server.handleDisconnection(player);
 
-        expect(server.disbandRoom).toHaveBeenCalledWith(room);
+        expect(server.disbandRoom).toHaveBeenCalledWith(
+            room, expect.any(String)
+        );
     });
 
     test('disbanded rooms are actually destroyed', () => {
+        server.lobby.players = [player, player];
         server.handleMatchRequest(player, gameName);
         server.handleMatchRequest(player, gameName);
 
