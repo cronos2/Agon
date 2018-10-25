@@ -68,10 +68,10 @@ describe('winner is correctly decided', () => {
             [[0, 1], [1, 3], [2, 5], [3, 7]].map(
                 m => toMove(...m)
             )
-        ), winner = Maybe(firstWins.getWinner.bind(firstWins));
+        ), winner = Maybe(firstWins.getWinner());
 
         expect(winner.isJust()).toBe(true);
-        expect(winner.value()).toBe(1 - firstWins.currentPlayer);
+        expect(winner.value()).toBe(firstWins.currentPlayer);
     });
 
     test('second wins', () => {
@@ -79,9 +79,9 @@ describe('winner is correctly decided', () => {
             [[0, 1], [1, 3], [2, 5], [3, 6], [3, 1]].map(
                 m => toMove(...m)
             )
-        ), winner = Maybe(secondWins.getWinner.bind(secondWins));
+        ), winner = Maybe(secondWins.getWinner());
 
         expect(winner.isJust()).toBe(true);
-        expect(winner.value()).toBe(1 - secondWins.currentPlayer);
+        expect(winner.value()).toBe(secondWins.currentPlayer);
     });
 });

@@ -35,7 +35,7 @@ class Nim extends BaseGame {
 
     getWinner(){
         if(this.boardIsEmpty()){
-            return 1 - this.currentPlayer;
+            return this.currentPlayer;  // last to move loses
         }
 
         return null;
