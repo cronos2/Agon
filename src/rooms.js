@@ -19,6 +19,13 @@ class Room {
         this.io.to(this._id).emit('disbanded', reason);
         this.players.forEach(player => player.socket.leave(this._id));
     }
+
+    serialize(){
+        return {
+            _id: this._id,
+            players: this.players.map(p => p.serialize())
+        };
+    }
 }
 
 
@@ -48,6 +55,12 @@ class GameRoom extends Room {
     disband(reason){
         super.disband(reason);
         this.players.forEach(player => player.gameRoom = null);
+    }
+
+    serialize(){
+        return Object.assign(super.serialize(), {
+            game: this.game
+        });
     }
 
     move(player, move){
