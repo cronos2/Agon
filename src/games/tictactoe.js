@@ -14,15 +14,15 @@ class TicTacToe extends BaseGame {
     }
 
     validateMove(player, move){
-        const {row, col} = move;
+        const { row, column } = move;
 
         return player == this.currentPlayer
-            && this.board[row][col] == TicTacToe.tiles.EMPTY;
+            && this.board[row][column] == TicTacToe.tiles.EMPTY;
     }
 
     makeMove(player, move){
-        const {row, col} = move;
-        this.putMove(row, col);
+        const { row, column } = move;
+        this.putMove(row, column);
         this.nextTurn();
     }
 

@@ -38,7 +38,7 @@ const movesFromBoard = (board) => {
             if(tile == ' '){ return moves; }
             moves[players.indexOf(tile)].push(
                 _.zipObject(
-                    ['row', 'col'],
+                    ['row', 'column'],
                     coordsFromIndex(i)
                 )
             );
@@ -81,7 +81,7 @@ describe('move validation', () => {
         const game = new TicTacToe();
 
         expect(
-            game.validateMove(game.currentPlayer, { row: 1, col: 1 })
+            game.validateMove(game.currentPlayer, { row: 1, column: 1 })
         ).toBe(true);
     });
 
@@ -89,12 +89,12 @@ describe('move validation', () => {
         const game = new TicTacToe();
 
         expect(
-            game.validateMove((game.currentPlayer + 1) % 2, { row: 1, col: 1 })
+            game.validateMove((game.currentPlayer + 1) % 2, { row: 1, column: 1 })
         ).toBe(false);
     });
 
     test('occupied cell', () => {
-        const game = new TicTacToe(), move = { row: 1, col: 1 };
+        const game = new TicTacToe(), move = { row: 1, column: 1 };
         game.makeMove(game.currentPlayer, move);
 
         expect(
