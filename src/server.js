@@ -41,7 +41,7 @@ class Server {
             const exit_code = socket.player.gameRoom.move(socket.player, move);
 
             if(exit_code == GameRoom.signals.EOG){
-                this.disbandRoom(socket.player.gameRoom);
+                this.disbandRoom(socket.player.gameRoom, 'End of game.');
             }
         });
 
@@ -56,14 +56,17 @@ class Server {
         this.gameRooms.filter(
             room => room.players.includes(player)
         ).forEach(
-            room => this.disbandRoom(room)
+            room => this.disbandRoom(room, 'Somebody left your party.')
         );
+
+        _.pull(this.lobby.players, player);
     }
 
-    disbandRoom(room){
-        console.log('room disbanded', room);
+    disbandRoom(room, reason){
+        console.log('room disbanded', room.serialize());
 
-        room.disband();
+        room.players.forEach(player => this.lobby.addPlayer(player));
+        room.disband(reason);
         _.pull(this.gameRooms, room);
     }
 
