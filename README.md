@@ -1,6 +1,13 @@
 [![Build Status](https://travis-ci.org/cronos2/Agon.svg?branch=master)](https://travis-ci.org/cronos2/Agon)
 
-## A minimal, PoC game server for the Virtual Infrastructure subject's project using microservices.
+<div>
+    <img src="/img/logo.gif" alt="Agon logo depicting a Greek athlete" />
+    <p align="center">Agon</p>
+    <p align="center" style="font-size: 0.5em">
+        A minimal, PoC game server for the Virtual Infrastructure subject's project using microservices.
+    </p>
+</div>
+
 
 The implementation uses Node.js and socket.io. Amazon S3 will be used for persistent storage.
 
