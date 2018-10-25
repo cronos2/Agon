@@ -72,7 +72,7 @@ describe('Moves', () => {
 
         room.move(players[0], 43);
 
-        expect(players[0].socket.emit).toHaveBeenCalledWith('wrongMove');
+        expect(players[0].socket.emit).toHaveBeenCalledWith('invalidMove');
     });
 
     test("clients receive their opponents' moves", () => {
@@ -124,11 +124,11 @@ describe('Signals', () => {
         expect(room.move(players[0], 43)).toBe(GameRoom.signals.OK);
     });
 
-    test('wrong move', () => {
+    test('invalid move', () => {
         const room = new GameRoom(G, io, players);
         room.game.validateMove = () => false;
 
-        expect(room.move(players[0], 43)).toBe(GameRoom.signals.WRONG_MOVE);
+        expect(room.move(players[0], 43)).toBe(GameRoom.signals.INVALID_MOVE);
     });
 });
 
