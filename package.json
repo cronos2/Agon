@@ -11,6 +11,9 @@
         "type": "git",
         "url": "git+https://github.com/cronos2/game-server.git"
     },
+    "engines": {
+      "node": "10.11.0"
+    },
     "author": "cronos2",
     "license": "GPL-3.0",
     "bugs": {
