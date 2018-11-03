@@ -44,3 +44,9 @@ Several classes are tested (unit testing):
 - `TicTacToe` and `Nim`, the game engines for the games supported
 - `Room` and `GameRoom`
 - `Server`
+
+### Deploy
+
+The deployment URL is https://agon-server.herokuapp.com
+
+Heroku is the chosen PaaS for the deploy because it's an established platform, it has plenty of resources and documentation for developers, and it has a decent free tier. In the future it might be moved to zeit.co or OpenShift.
