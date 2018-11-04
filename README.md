@@ -50,3 +50,5 @@ Several classes are tested (unit testing):
 The deployment URL is https://agon-server.herokuapp.com
 
 Heroku is the chosen PaaS for the deploy because it's an established platform, it has plenty of resources and documentation for developers, and it has a decent free tier. In the future it might be moved to zeit.co or OpenShift.
+
+To check that everything has gone smoothly, you can check the `/status/` endpoint (or any other path, in fact) which should return a JSON payload containing `"status": "OK"`.
