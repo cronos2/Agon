@@ -7,6 +7,10 @@
         "start": "node app.js",
         "test": "jest"
     },
+    "jest": {
+        "collectCoverage": true,
+        "coverageDirectory": "./coverage/"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/cronos2/game-server.git"

@@ -3,21 +3,23 @@ const io = require('socket.io')();
 
 const BaseGame = require('./games/basegame.js');
 const Player = require('./player.js');
-const { Room } = require('./rooms.js');
+const { GameRoom, Room } = require('./rooms.js');
 const Server = require('./server.js');
+const TicTacToe = require('./games/tictactoe.js');
 
-let player, server;
+let player, server, socket;
 const gameName = 'TicTacToe';
 
 beforeEach(() => {
     server = new Server(io);
-    player = new Player({
+    socket = {
         'emit': jest.fn(),
         'join': jest.fn(),
         'leave': jest.fn(),
         'on': jest.fn(),
-    });
-    player.socket.player = player;
+    };
+    player = new Player(socket, '');
+    socket.player = player;
 });
 
 describe('Initialization', () => {
@@ -32,6 +34,67 @@ describe('Initialization', () => {
     test('lobby is created', () => {
         expect(server.lobby).toBeDefined();
         expect(server.lobby).toBeInstanceOf(Room);
+    });
+
+    test('Socket.io setup', () => {
+        const io_ = {
+            'on': jest.fn(),
+            'use': jest.fn(),
+        };
+        const server = new Server(io_);
+
+        expect(io_.use).toBeCalled();
+        expect(io_.on).toHaveBeenCalledWith(
+            'connection', expect.any(Function)
+        );
+    });
+});
+
+describe('Connection handling', () => {
+    it('should add the player to the lobby', () => {
+        server.handleConnection(socket);
+        expect(server.lobby.players).toContain(player);
+    });
+
+    it('should register a findMatch listener', () => {
+        server.handleConnection(socket);
+        expect(socket.on).toHaveBeenCalledWith(
+            'findMatch', expect.any(Function)
+        );
+    });
+
+    it('should register a move listener', () => {
+        server.handleConnection(socket);
+        expect(socket.on).toHaveBeenCalledWith(
+            'move', expect.any(Function)
+        );
+    });
+
+    it('should register a disconnect listener', () => {
+        server.handleConnection(socket);
+        expect(socket.on).toHaveBeenCalledWith(
+            'disconnect', expect.any(Function)
+        );
+    });
+});
+
+describe('Disconnection handling', () => {
+    it('should remove the player from the lobby', () => {
+        server.handleConnection(socket);
+        server.handleDisconnection(player);
+        expect(server.lobby).not.toContain(player);
+    });
+
+    it('should disband game rooms in which the player is', () => {
+        server.handleConnection(socket);
+
+        const gameRoom = new GameRoom(TicTacToe, {}, [player, player]);
+        gameRoom.disband = jest.fn();
+        server.gameRooms = [gameRoom];
+
+        server.handleDisconnection(player);
+
+        expect(gameRoom.disband).toHaveBeenCalledWith(expect.any(String));
     });
 });
 
