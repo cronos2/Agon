@@ -7,7 +7,7 @@
 </h1>
 
 [![Build Status](https://travis-ci.org/cronos2/Agon.svg?branch=master)](https://travis-ci.org/cronos2/Agon)
-
+[![Code coverage report](https://codecov.io/gh/cronos2/Agon/branch/master/graph/badge.svg)](https://codecov.io/gh/cronos2/Agon)
 
 The implementation uses Node.js and socket.io. Amazon S3 will be used for persistent storage.
 
