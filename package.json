@@ -1,6 +1,6 @@
 {
-    "name": "game-server",
-    "version": "0.3.0",
+    "name": "Agon",
+    "version": "0.4.0",
     "description": "A PoC game server using microservices",
     "main": "app.js",
     "scripts": {
@@ -13,7 +13,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/cronos2/game-server.git"
+        "url": "git+https://github.com/cronos2/Agon.git"
     },
     "engines": {
       "node": "10.11.0"
@@ -21,9 +21,9 @@
     "author": "cronos2",
     "license": "GPL-3.0",
     "bugs": {
-        "url": "https://github.com/cronos2/game-server/issues"
+        "url": "https://github.com/cronos2/Agon/issues"
     },
-    "homepage": "https://github.com/cronos2/game-server#readme",
+    "homepage": "https://github.com/cronos2/Agon#readme",
     "dependencies": {
         "dotenv": "^6.1.0",
         "lodash": "^4.17.11",
