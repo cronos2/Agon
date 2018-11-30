@@ -32,8 +32,10 @@ To build the image we can use the `docker-build` command:
 docker build -t cronos2/Agon .
 ```
 
-Finally, we push the image to the DockerHub registry:
+Finally, we push the image to the Docker Hub registry:
 
 ``` shell
 docker push cronos2/Agon
 ```
+
+Alternatively, to make things easier, we can configure an automated build from Docker Hub that will get triggered when we push to the GitHub repository. You can check this is the case in the [image's detail page](https://hub.docker.com/r/cronos2/agon/).
