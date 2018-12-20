@@ -11,6 +11,8 @@
       command: bash /etc/node10_setup.sh
     - name: Install node and npm
       apt: pkg=nodejs state=present
+    - name: Install rsync
+      apt: pkg=rsync state=present
 
 - name: Create serving directory
   hosts: all
