@@ -1,6 +1,6 @@
 {
     "name": "Agon",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "description": "A PoC game server using microservices",
     "main": "app.js",
     "scripts": {
