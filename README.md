@@ -54,4 +54,13 @@ Final deployment: 13.81.248.48
 
 Heroku is the chosen PaaS for the deploy because it's an established platform, it has plenty of resources and documentation for developers, and it has a decent free tier. In the future it might be moved to zeit.co or OpenShift.
 
+As for the IaaS alternative, Azure was a good fit since we had free credits available. In order to deploy the application you can
+
+``` shell
+vagrant up
+npx shipit production deploy --shipitfile deployment/shipitfile.js
+```
+
+For more information, check the [documentation](https://github.com/cronos2/Agon/doc/azure.md).
+
 To check that everything has gone smoothly, you can check the `/status/` endpoint (or any other path, in fact) which should return a JSON payload containing `"status": "OK"`.
