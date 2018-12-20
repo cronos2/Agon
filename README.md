@@ -50,6 +50,7 @@ Several classes are tested (unit testing):
 The deployment URL is https://agon-server.herokuapp.com.
 The container URL is https://agon-server.herokuapp.com too.
 The Docker image can be found [here](https://hub.docker.com/r/cronos2/agon/).
+Final deployment: 13.81.248.48
 
 Heroku is the chosen PaaS for the deploy because it's an established platform, it has plenty of resources and documentation for developers, and it has a decent free tier. In the future it might be moved to zeit.co or OpenShift.
 
