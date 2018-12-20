@@ -19,7 +19,7 @@ module.exports = shipit => {
     }
   });
 
-  shipit.blTkask('run tests', () => {
+  shipit.blTask('run tests', () => {
     return shipit.local('npm run test');
   });
 
@@ -35,7 +35,7 @@ module.exports = shipit => {
   shipit.task(
     'start server',
     ['install packages', 'install environment variables'],
-    () => { return shipit.remote(`cd ${currentPath} && PORT=80 sudo npm start &`); }
+    () => { return shipit.remote(`cd ${currentPath} && sudo PORT=80 npm start &`); }
   );
 
   shipit.on('init', () => {
