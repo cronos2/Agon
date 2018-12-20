@@ -3,6 +3,8 @@ require('dotenv').config();
 const http = require('http');
 const socketio = require('socket.io');
 
+const logger = require('./src/logger.js');
+
 const app = http.createServer((req, res) => {
     const playersCount = server.lobby.players.length + server.gameRooms.reduce(
         (count, room) => count + room.players.length,

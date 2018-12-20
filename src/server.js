@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const winston = require('winston');
+
 const { GameRoom, Room } = require('./rooms.js');
 const Player = require('./player.js');
 
@@ -19,7 +21,7 @@ class Server {
 
     setUpIO(){
         this.io.use((socket, next) => {
-            console.log('username', socket.handshake.query.username);
+            winston.debug('username', socket.handshake.query.username);
             socket.player = new Player(socket, socket.handshake.query.username);
             next();
         });
@@ -28,16 +30,16 @@ class Server {
     }
 
     handleConnection(socket){
-        console.log('new player', socket.player.serialize());
+        winston.info('new player', socket.player.serialize());
         this.lobby.addPlayer(socket.player);
 
         socket.on('findMatch', gameName => {
-            console.log('find match');
+            winston.verbose('find match', gameName);
             this.handleMatchRequest(socket.player, gameName);
         });
 
         socket.on('move', move => {
-            console.log('move', move);
+            winston.debug('move', move);
             const exit_code = socket.player.gameRoom.move(socket.player, move);
 
             if(exit_code == GameRoom.signals.EOG){
@@ -51,7 +53,7 @@ class Server {
     }
 
     handleDisconnection(player){
-        console.log('player disconnected', player.serialize());
+        winston.info('player disconnected', player.serialize());
 
         this.gameRooms.filter(
             room => room.players.includes(player)
@@ -63,7 +65,7 @@ class Server {
     }
 
     disbandRoom(room, reason){
-        console.log('room disbanded', room.serialize());
+        winston.verbose('room disbanded', room.serialize());
 
         room.players.forEach(player => this.lobby.addPlayer(player));
         room.disband(reason);
@@ -78,7 +80,7 @@ class Server {
 
     handleMatchRequest(player, gameName){
         player.gameName = gameName;
-        console.log('lobby', this.lobby.players.map(p => p.serialize()));
+        winston.debug('lobby', this.lobby.players.map(p => p.serialize()));
 
         this.attemptMatch(gameName);
     }
@@ -101,7 +103,7 @@ class Server {
     }
 
     createRoom(gameName, players){
-        console.log('match found. creating new room');
+        winston.info('match found. creating new room');
 
         const newRoom = new GameRoom(
             this.gameNames[gameName],
@@ -115,11 +117,12 @@ class Server {
                 'matchFound',
                 players.map(p => p.serialize()),  // players
                 i,                                // own
-                newRoom.game.currentPlayer        // current
+                newRoom.game.currentPlayer,       // current
+                newRoom._id,                      // roomId
             );
         });
 
-        console.log(players.map(p => p.serialize()));
+        winston.debug('players', players.map(p => p.serialize()));
     }
 }
 
